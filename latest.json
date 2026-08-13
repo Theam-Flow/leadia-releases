@@ -1,0 +1,25 @@
+{
+  "version": "0.11.0",
+  "etiqueta": "v0.11.0",
+  "publicado": "2026-08-13",
+  "notas": "TRES COSAS QUE SE DESCUBREN SOLO PUBLICANDO. El camino de publicar no se había\nejecutado nunca —no había ni una etiqueta en el repositorio— y el primer intento\nenseñó dos agujeros a la vez.\n\nEL DMG NO SE CONSTRUÍA. El job de macOS moría a los tres minutos en «no se\nencontró `claude` en el PATH»: `empaquetar-daemon.mjs` mete el CLI dentro del\nbundle copiándolo del PATH y el runner no lo trae. En Windows no pasaba porque\nallí el propio script hace el `npm install`. Ahora macOS instala el MISMO pin en\nuna carpeta aparte y apunta el fichero a mano en vez de fiarse de lo que el PATH\nresuelva. Y comprueba que sea un Mach-O de verdad: si un día el postinstall\ndejara un lanzador de texto, el dmg saldría con un motor que no arranca en casa\ndel cliente y el build seguiría en verde.\n\nINSTALAR CON UNA LÍNEA. `installers/publico/` — `curl … | bash` en macOS,\n`irm … | iex` en Windows. No instalan nada por su cuenta: leen el manifiesto\npúblico, descargan el instalador y el juego de instaladores de ESA versión,\nverifican las dos huellas SHA-256 y le pasan el trabajo a `instalar-mac.sh` /\n`instalar-windows.ps1`, que son los que saben sustituir sin dejar copias sueltas\ny sin tocar los datos. Si la huella no cuadra, o si el manifiesto no trae huella,\nse para: HTTPS dice de dónde viene un fichero, no que sea el que se publicó, y\nuna descarga cortada también llega por HTTPS.\n\nSe prueban sin red, con el manifiesto y las descargas por `file://` —el mismo\ncódigo de curl que corre contra GitHub— y con un doble del instalador que apunta\ncómo lo llamaron: 18 comprobaciones en macOS y 15 en Windows, incluidas las tres\nque importan (huella mala, huella ausente y zip alterado NO instalan nada). Las\nde Windows corren en el CI de Windows, que es la máquina donde se usan.\n\nY un candado sobre el propio flujo de publicar: que siga empaquetando el zip,\nsubiéndolo, declarándolo en el manifiesto con su huella y copiando los dos\nguiones al repo público. Si eso se cae, el one-liner que está pegado en la guía\ndel cliente deja de funcionar y solo se vería cuando lo intente alguien nuevo.\n\nLa guía de uso estrena las dos líneas y dice lo que antes no decía: que a partir\nde aquí la app se actualiza sola.",
+  "plataformas": {
+    "windows": {
+      "nombre": "LeadIA_0.11.0_x64-setup.exe",
+      "url": "https://github.com/Theam-Flow/leadia-releases/releases/download/v0.11.0/LeadIA_0.11.0_x64-setup.exe",
+      "sha256": "21e4da00e523a58452bd17caa610e2c490bd887dbe6ccf8ad56178a0d63bc7a1"
+    },
+    "macos": {
+      "nombre": "LeadIA_0.11.0_aarch64.dmg",
+      "url": "https://github.com/Theam-Flow/leadia-releases/releases/download/v0.11.0/LeadIA_0.11.0_aarch64.dmg",
+      "sha256": "76a1041c28a8ffee45e4ff3ca00d4332e87c2c0ae143fbacd67caef06f168c72"
+    }
+  },
+  "herramientas": {
+    "instaladores": {
+      "nombre": "instaladores.zip",
+      "url": "https://github.com/Theam-Flow/leadia-releases/releases/download/v0.11.0/instaladores.zip",
+      "sha256": "4d7d4fa4f8d8f964d01f776739fc39825d3e9a70b35833463d3dfde3456e96de"
+    }
+  }
+}
