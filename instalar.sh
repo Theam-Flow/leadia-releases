@@ -272,4 +272,16 @@ printf "  %s%s%s\n\n" "$NAVY" "$(repetir '─' "$ANCHO")" "$RESET"
 printf "     %sDónde:%s        %s%s/LeadIA.app%s\n" "$GRIS_TENUE" "$RESET" "$AZURE_INK" "$DESTINO" "$RESET"
 printf "     %sSus datos:%s    %s~/Library/Application Support/tech.leadia.desktop%s\n" "$GRIS_TENUE" "$RESET" "$GRIS" "$RESET"
 printf "     %sActualiza:%s    %ssola — la app le avisa cuando haya versión nueva%s\n" "$GRIS_TENUE" "$RESET" "$GRIS" "$RESET"
-printf "\n  %s%sÁbrala desde Aplicaciones o desde el acceso del Escritorio.%s\n\n" "$BOLD" "$AZURE_PALE" "$RESET"
+
+# Se abre sola. Quien acaba de instalar quiere ver la app, no que le expliquen
+# dónde buscarla: el último paso de una instalación es que el programa esté
+# delante. `LEADIA_NO_ABRIR=1` para las pruebas y las instalaciones desatendidas.
+if [ "${LEADIA_NO_ABRIR:-0}" = "1" ]; then
+  printf "\n  %s%sÁbrala desde Aplicaciones o desde el acceso del Escritorio.%s\n\n" "$BOLD" "$AZURE_PALE" "$RESET"
+else
+  printf "\n  %s%sAbriendo LeadIA…%s\n\n" "$BOLD" "$AZURE_PALE" "$RESET"
+  # Que no se pueda abrir no invalida una instalación que ya está hecha y
+  # verificada: se dice y se sale bien.
+  open -a "$DESTINO/LeadIA.app" 2>/dev/null \
+    || printf "  %sno se pudo abrir sola; ábrala desde Aplicaciones.%s\n\n" "$GRIS" "$RESET"
+fi

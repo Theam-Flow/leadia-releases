@@ -19,7 +19,7 @@
     "instaladores": {
       "nombre": "instaladores.zip",
       "url": "https://github.com/Theam-Flow/leadia-releases/releases/download/v0.11.0/instaladores.zip",
-      "sha256": "4f8ccf76bc5caa20aa22ce494d32671ef82a42c7a83d719e71c0495775089147"
+      "sha256": "fecd4d3e09d30ea2bfdad6eec74d952ef836066e9822a339c5365adb1e947c2a"
     }
   }
 }

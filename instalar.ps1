@@ -258,7 +258,25 @@ try {
   Pintar '     Actualiza:    ' $GRIS_TENUE 'DarkGray' -SinSalto
   Pintar 'sola — la app le avisa cuando haya versión nueva' $GRIS 'Gray'
   Write-Host ''
-  Pintar '  Ábrala desde el menú de inicio o desde el acceso del Escritorio.' $AZURE_PALE 'Cyan'
+  # Se abre sola: el último paso de una instalación es que el programa esté
+  # delante. `LEADIA_NO_ABRIR=1` para pruebas e instalaciones desatendidas.
+  if ($env:LEADIA_NO_ABRIR -eq '1') {
+    Pintar '  Ábrala desde el menú de inicio o desde el acceso del Escritorio.' $AZURE_PALE 'Cyan'
+  } else {
+    Pintar '  Abriendo LeadIA…' $AZURE_PALE 'Cyan'
+    # Que no se pueda abrir no invalida una instalación ya hecha y verificada.
+    # NSIS instala por usuario o por máquina según el modo; se miran los dos
+    # sitios en vez de suponer uno.
+    $abierta = $false
+    try {
+      foreach ($base in @($env:LOCALAPPDATA, $env:ProgramFiles, ${env:ProgramFiles(x86)})) {
+        if (-not $base) { continue }
+        $exe = Join-Path (Join-Path $base 'LeadIA') 'leadia-desktop.exe'
+        if (Test-Path -LiteralPath $exe) { Start-Process -FilePath $exe; $abierta = $true; break }
+      }
+    } catch { $abierta = $false }
+    if (-not $abierta) { Pintar '  no se pudo abrir sola; ábrala desde el menú de inicio.' $GRIS 'Gray' }
+  }
   Write-Host ''
 } finally {
   # El .exe descargado vive dentro de la carpeta de trabajo: se borra DESPUÉS de
