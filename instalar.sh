@@ -257,8 +257,10 @@ printf "\n"
 # pensando dos minutos» en «está haciendo estas cosas». `PIPESTATUS` porque a
 # través de la tubería el `$?` sería el del `sed`, y un fallo pasaría por bueno.
 set +e
+# El `t` es lo que impide que las dos reglas se apliquen a la misma línea: sin
+# él, un paso «==> …» se sangraba dos veces y la columna quedaba en zigzag.
 "$INSTALADOR" --origen "$TRABAJO/$DMG_NOMBRE" --destino "$DESTINO" 2>&1 \
-  | sed -e "s/^==> /$(printf '%s' "     ${AZURE_SOFT}▸${RESET} ")/" -e "s/^\( *\)\([^ ]\)/     \1\2/"
+  | sed -e "s/^==> /$(printf '%s' "     ${AZURE_SOFT}▸${RESET} ")/;t" -e "s/^/     /"
 ESTADO=${PIPESTATUS[0]}
 set -e
 [ "$ESTADO" -eq 0 ] || morir "la instalación no se completó (código $ESTADO). No se ha tocado la versión anterior."
